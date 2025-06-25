@@ -1,317 +1,352 @@
-<!DOCTYPE html>
-<html lang="en">
+  <!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>XCare H5 Pro - Smart Elder Care Solution</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI家庭健康中枢 - 您的私人健康管家</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Noto Sans SC', sans-serif;
             background-color: #f8f9fa;
-            color: #333;
         }
-        .text-primary { color: #27296A; }
-        .text-secondary { color: #BD9B2F; }
-        .bg-primary { background-color: #27296A; }
-        .bg-secondary { background-color: #BD9B2F; }
-        .border-primary { border-color: #27296A; }
-        .border-secondary { border-color: #BD9B2F; }
-
-        .hero-section {
-            /* FIXED: Replaced placeholder with a professional background image */
-            background: linear-gradient(rgba(39, 41, 106, 0.8), rgba(39, 41, 106, 0.8)), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .section-title {
-            font-weight: 900;
-            font-size: 2.25rem;
-            line-height: 2.5rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            color: #27296A;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto 3rem auto;
-            color: #6c757d;
-            font-size: 1.125rem;
-        }
-
-        .feature-card {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(39, 41, 106, 0.1), 0 10px 10px -5px rgba(39, 41, 106, 0.04);
-        }
-        
         .chart-container {
             position: relative;
-            height: 400px;
             width: 100%;
             max-width: 800px;
-            margin: auto;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 40vh;
         }
-
-        /* Print Styles */
-        @media print {
-            body {
-                background-color: #ffffff !important;
-                -webkit-print-color-adjust: exact;
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 50vh;
             }
-            .no-print { display: none; }
-            .print-section {
-                padding-top: 1.5rem;
-                padding-bottom: 1.5rem;
-                page-break-inside: avoid;
-            }
-            .hero-section {
-                background: none !important;
-                padding-top: 2rem !important;
-                padding-bottom: 2rem !important;
-            }
-            .hero-section h1, .hero-section p {
-                color: #27296A !important;
-            }
-             .section-title, .section-subtitle, .text-primary {
-                color: #27296A !important;
-            }
-            .feature-card {
-                box-shadow: none !important;
-                border: 1px solid #e5e7eb;
-            }
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #005C97, #363795);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-content {
+            flex-grow: 1;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .spec-table th, .spec-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .spec-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #005C97;
+            width: 30%;
         }
     </style>
 </head>
-<body class="font-sans">
-<!-- Main Container -->
-<div class="max-w-6xl mx-auto bg-[#f5f5f7] shadow-xl text-gray-800">
-<!-- Header / Hero Section -->
-<header class="hero-section text-white text-center py-20 px-6 print-section">
-    <h1 class="text-4xl md:text-6xl font-black tracking-tight">XCare H5 Pro</h1>
-    <p class="mt-4 text-xl md:text-2xl font-light">The Future of Smart Elder Care</p>
-    <p class="mt-2 text-lg md:text-xl font-light max-w-3xl mx-auto">Guarding lives with technology. A precise, dignified care solution for professional nursing facilities and home care.</p>
-</header>
+<body class="text-gray-800">
 
-<main class="p-6 md:p-12">
-    <!-- The Challenge Section -->
-    <section class="my-16 print-section">
-        <h2 class="section-title">The Unseen Challenge of Modern Elder Care</h2>
-        <p class="section-subtitle">Whether in professional care facilities or at home, the pressure is on to provide efficient, continuous monitoring for the health and safety of our elders.</p>
-        <div class="grid md:grid-cols-2 gap-8 text-center">
-            <div class="bg-gray-50 p-8 rounded-lg">
-                <h3 class="text-2xl font-bold text-primary mb-3">For Nursing Homes: Efficiency &amp; Staffing Bottlenecks</h3>
-                <p class="text-gray-700">Caregivers are stretched thin, managing multiple residents at once, making 24/7 observation nearly impossible. Nightly rounds can disturb sleep, and delayed responses to emergencies like falls or vital sign changes can have serious consequences.</p>
-            </div>
-            <div class="bg-gray-50 p-8 rounded-lg">
-                <h3 class="text-2xl font-bold text-primary mb-3">For Home Care: The Anxiety of Distance</h3>
-                <p class="text-gray-700">The "9073" care model shows that the vast majority of seniors prefer to age in place. For family members juggling work and life, this creates constant worry about the safety of loved ones living alone. They need a solution that respects independence while providing real-time peace of mind.</p>
-            </div>
-        </div>
-    </section>
+    <div class="container mx-auto p-4 md:p-8">
 
-    <!-- The Solution Section -->
-    <section class="my-16 print-section">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-primary">The Solution: XCare H5 Pro, The Unseen Guardian</h2>
-                <p class="mt-4 text-lg text-gray-700">The XCare H5 Pro is a revolutionary non-contact vital signs radar. Using advanced mmWave technology, it operates without wearables or cameras, becoming an "unseen guardian" that delivers continuous, accurate monitoring while completely preserving privacy and dignity.</p>
-                <div class="mt-6 space-y-3">
-                    <p class="flex items-center text-gray-700"><span class="text-secondary font-bold text-xl mr-3">✓</span> Heart Rate Accuracy: ≤ ±5 bpm</p>
-                    <p class="flex items-center text-gray-700"><span class="text-secondary font-bold text-xl mr-3">✓</span> Respiration Accuracy: ≤ ±5 bpm</p>
-                    <p class="flex items-center text-gray-700"><span class="text-secondary font-bold text-xl mr-3">✓</span> Fall &amp; Bed-Exit Detection</p>
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold gradient-text mb-4">开启您的主动式健康生活</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-gray-600">AI家庭健康中枢：您的私人健康管家</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-gray-500">
+                将您家中的电视，升级为关爱全家人的智能健康中心。它默默守护，主动分析，用看得懂的方式，呈现您和家人的健康趋势。
+            </p>
+        </header>
+
+        <section id="scene" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">一个温馨的日常场景</h3>
+            <div class="card p-4 md:p-8">
+                <div class="bg-gray-100 rounded-lg overflow-hidden shadow-inner">
+                    <img src="https://raw.githubusercontent.com/luoxisg/AIHealthbox/main/image/picture.png" alt="AI家庭健康中枢在客厅的应用场景" class="w-full h-auto object-cover" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e9ecef/6c757d?text=温馨客厅场景';">
+                </div>
+                <div class="mt-8 text-center text-gray-700">
+                     <p class="text-lg leading-relaxed">上图描绘了一个典型的应用场景：当您与家人享受温馨的客厅时光，AI健康中枢已将电视变成一个环境化的健康信息中心。它将关键的健康摘要（如睡眠质量、活动达标情况）以最不打扰的方式展示在屏幕一角，让全家人都能自然地了解彼此的健康状况。同时，您可以通过手机App随时查看更详细的报告，比如父母的血压趋势或孩子的睡眠周期。它不是一个需要您刻意交互的冰冷设备，而是一个安静、智能的守护者，让关爱无缝融入家的每一个角落。</p>
                 </div>
             </div>
-            <div class="flex justify-center items-center">
-                <img alt="An elderly man sleeps peacefully while the XCare device monitors him from the wall." class="rounded-2xl shadow-2xl max-w-sm w-full" onerror="this.onerror=null;this.src='https://placehold.co/600x800/e0e0e0/333?text=Product+in+Use';" src="image/usecase.png"/>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Product Display Section -->
-    <section class="my-16 print-section bg-gray-50 -mx-6 md:-mx-12 py-16 px-6 md:px-12" id="product-display">
-        <h2 class="section-title">Meet the XCare H5 Pro</h2>
-        <p class="section-subtitle">Discreetly designed to blend into any environment, providing powerful protection without intrusion.</p>
-        <div class="max-w-xs mx-auto">
-            <img alt="The XCare H5 Pro device." class="rounded-2xl shadow-2xl w-full" onerror="this.onerror=null;this.src='https://placehold.co/600x600/ffffff/27296A?text=Product.jpg';" src="image/product.jpg"/>
-        </div>
-    </section>
-
-    <!-- Key Features Section -->
-    <section class="my-16 print-section">
-        <h2 class="section-title">A Complete Circle of Protection</h2>
-        <p class="section-subtitle">Packed with powerful, thoughtful features designed to provide holistic safety and connectivity.</p>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <div class="feature-card"><p class="text-4xl">❤️</p><h3 class="mt-4 font-bold">Vital Signs Monitoring</h3></div>
-            <div class="feature-card"><p class="text-4xl">🌙</p><h3 class="mt-4 font-bold">Pro Sleep Reports</h3></div>
-            <div class="feature-card"><p class="text-4xl">📡</p><h3 class="mt-4 font-bold">4G &amp; Wi-Fi Alerts</h3></div>
-            <div class="feature-card"><p class="text-4xl">🛡️</p><h3 class="mt-4 font-bold">On-Device AI</h3></div>
-            <div class="feature-card"><p class="text-4xl">🔄</p><h3 class="mt-4 font-bold">OTA Updates</h3></div>
-            <div class="feature-card"><p class="text-4xl">🎙️</p><h3 class="mt-4 font-bold">Two-Way Voice</h3></div>
-        </div>
-    </section>
-
-    <!-- Use Cases Section -->
-    <section class="my-16 print-section bg-gray-50 -mx-6 md:-mx-12 py-16 px-6 md:px-12">
-        <h2 class="section-title">Professional Solutions for Every Care Setting</h2>
-        <p class="section-subtitle">Whether in a professional nursing facility or a warm family home, XCare H5 Pro delivers the right protection.</p>
-        <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Nursing Home Card -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col text-gray-800">
-                <img alt="A caregiver reviews health data on a futuristic interface." class="w-full h-56 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/333?text=Nursing+Home+Use+Case';" src="image/usecase2.png"/>
-                <div class="p-8 flex-grow">
-                    <h3 class="text-2xl font-bold text-primary mb-3">Empowering Professional Care Facilities</h3>
-                    <p class="mb-4">A centralized dashboard allows staff to monitor real-time vital signs and in-bed status for multiple residents, streamlining management. The system automatically logs anomalies and generates professional reports to assist with health assessments, dramatically improving care efficiency and quality.</p>
-                    <ul class="space-y-2">
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Centralized Management:</strong> Oversee all devices from a single platform.</li>
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Proactive Alerts:</strong> Pushes notifications for anomalies, shifting from reactive to proactive care.</li>
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Data-Driven Insights:</strong> Provides objective data to support personalized care plans.</li>
-                    </ul>
+        <section id="benefits" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">一位真正懂您的健康伙伴</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card text-center">
+                    <div class="text-5xl mb-4">🛡️</div>
+                    <div class="card-content">
+                        <h4 class="text-xl font-bold text-[#005C97] mb-2">您的健康，只属于您</h4>
+                        <p class="text-gray-600">所有敏感数据都在您家中的设备里进行本地化处理，绝不上传云端。这意味着没有任何人，包括我们，可以访问您的隐私。我们用银行级的安全标准，守护您最珍贵的健康信息。</p>
+                    </div>
+                </div>
+                <div class="card text-center">
+                    <div class="text-5xl mb-4">❤️‍🩹</div>
+                    <div class="card-content">
+                        <h4 class="text-xl font-bold text-[#005C97] mb-2">即时反馈，时刻关心</h4>
+                        <p class="text-gray-600">无论是运动后心率的恢复速度，还是夜间睡眠的辗转反侧，AI都能即时分析并给出反馈。它就像一位24小时待命的家庭医生，时刻关注您的点滴变化，让您对自己的身体了如指掌。</p>
+                    </div>
+                </div>
+                <div class="card text-center">
+                    <div class="text-5xl mb-4">🚀</div>
+                    <div class="card-content">
+                        <h4 class="text-xl font-bold text-[#005C97] mb-2">一次投入，持续升级</h4>
+                        <p class="text-gray-600">这不仅是一个硬件，更是一个不断进化的健康服务平台。我们的AI算法和功能会通过网络定期免费更新。一次选择，就能享受不断变强的健康守护服务，常用常新。</p>
+                    </div>
                 </div>
             </div>
-            <!-- Home Care Card -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col text-gray-800">
-                <img alt="A family views health monitoring data together at home." class="w-full h-56 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/333?text=Home+Care+Use+Case';" src="image/usecase1.png"/>
-                <div class="p-8 flex-grow">
-                    <h3 class="text-2xl font-bold text-primary mb-3">Protecting Independent Living at Home</h3>
-                    <p class="mb-4">Provide an invisible safety net for seniors aging in place. Family members can check on their loved one's health data and sleep reports anytime via the mobile app. In case of a fall or abnormal vital signs, the system immediately alerts the family through app notifications, SMS, and phone calls.</p>
-                    <ul class="space-y-2">
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Remote Peace of Mind:</strong> Know how your loved one is doing, anytime, anywhere.</li>
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Instant Alerts:</strong> Multi-channel notifications ensure you’re the first to know in an emergency.</li>
-                        <li class="flex items-start"><span class="text-primary font-bold mr-2">✓</span> <strong>Respect for Privacy:</strong> The camera-free design protects safety and, most importantly, dignity.</li>
-                    </ul>
+        </section>
+
+        <section id="for-family" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">为您的整个家庭而设计</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card">
+                    <div class="text-4xl mb-4">👴👵</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">关爱长辈</h4>
+                    <p class="text-gray-600">为父母设置，主动监测**血压、心率、血氧**等关键指标的长期变化，结合对化验单中**血脂、血糖**数据的分析，对潜在的“三高”风险进行预警。即使您不在身边，也能远程了解他们的健康状况，让关爱没有距离。</p>
+                </div>
+                <div class="card">
+                    <div class="text-4xl mb-4">👩‍💼👨‍💻</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">守护中坚</h4>
+                    <p class="text-gray-600">对于家庭的顶梁柱，它能分析压力水平、睡眠质量和运动量的平衡，结合对**心率、血氧**的持续监测，帮助您更好地管理精力，在快节奏的工作和生活中找到最佳状态，避免健康透支。</p>
+                </div>
+                <div class="card">
+                    <div class="text-4xl mb-4">👧👦</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">陪伴成长</h4>
+                    <p class="text-gray-600">记录孩子的睡眠模式和每日活动量，通过对夜间**心率**和**血氧**变化的分析，帮助家长更科学地了解其成长发育状况。通过趣味性的目标设定，鼓励孩子养成健康的生活习惯。</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Data Insights Section -->
-    <section class="my-16 print-section">
-        <h2 class="section-title">From Data to Insight: Sleep Quality Analysis</h2>
-        <p class="section-subtitle">XCare does more than just monitor—it translates raw data into actionable health insights. The sleep summary report helps track sleep quality over time, identifying patterns that could indicate underlying health issues.</p>
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <div class="chart-container">
-                <canvas id="sleepQualityChart"></canvas>
+        <section id="how-it-works" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">它是如何工作的？简单三步</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                <div class="card">
+                    <h4 class="text-2xl font-bold text-[#005C97] mb-4">1. 全面汇集您的健康数据</h4>
+                    <p class="text-gray-600 mb-4">它能整合来自不同设备和来源的数据，为您描绘一幅完整的健康画像。</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                            <span class="text-2xl mr-4">⌚️</span>
+                            <div><h5 class="font-bold text-[#005C97]">日常动态监测</h5><p class="text-sm text-gray-700">通过智能手表/手环、血压计等，自动同步**心率、血氧、血压**、睡眠和活动数据。</p></div>
+                        </div>
+                        <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                            <span class="text-2xl mr-4">📄</span>
+                            <div><h5 class="font-bold text-[#005C97]">医院报告数字化</h5><p class="text-sm text-gray-700">轻松拍下医院化验单，AI会自动识别**血常规、血脂、血糖**等关键指标并存入档案。</p></div>
+                        </div>
+                         <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                             <span class="text-2xl mr-4">🗣️</span>
+                             <div><h5 class="font-bold text-[#005C97]">语音与手动记录</h5><p class="text-sm text-gray-700">随口问问“我昨晚睡得好吗”，或随手记录心情与饮食。</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 class="text-2xl font-bold text-[#005C97] mb-4">2. AI大脑进行深度分析</h4>
+                    <p class="text-gray-600 mb-4">强大的本地AI引擎，像一位智慧大脑，深度分析所有数据，发现潜在的联系。</p>
+                     <div class="relative p-4">
+                        <div class="flex flex-col items-center space-y-2">
+                            <div class="w-full p-3 bg-blue-200 rounded-lg text-center shadow-sm"><p class="font-semibold text-blue-800">第一步：汇集健康线索</p></div>
+                            <div class="text-2xl text-blue-500">↓</div>
+                            <div class="w-full p-3 bg-blue-300 rounded-lg text-center shadow-sm"><p class="font-semibold text-blue-800">第二步：发现数据间的关联</p></div>
+                            <div class="text-2xl text-blue-500">↓</div>
+                            <div class="w-full p-3 bg-blue-400 rounded-lg text-center shadow-sm"><p class="font-semibold text-white">第三步：评估潜在风险</p></div>
+                            <div class="text-2xl text-blue-500">↓</div>
+                             <div class="w-full p-3 bg-[#005C97] rounded-lg text-center shadow-sm"><p class="font-semibold text-white">最终步：生成您看得懂的报告</p></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
 
-<!-- Footer -->
-<footer class="bg-primary text-white text-center p-8 no-print">
-    <h3 class="text-2xl font-bold">Learn More or Request a Demo</h3>
-    <p class="mt-2">Contact us to step into the future of smart elder care</p>
-    <p class="mt-4 text-lg font-semibold">contact@example.com | 1-800-123-4567</p>
-</footer>
-</div>
+        <section id="features" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">为您专属的核心健康功能</h3>
+            <div class="card mb-8">
+                <h4 class="text-2xl font-bold text-[#005C97] mb-4">洞察长期趋势，防患于未然</h4>
+                <p class="text-gray-600 mb-6">它最大的价值，是帮您看到那些不易察觉的、缓慢变化的健康趋势。例如，AI可能会发现您近一个月的静息心率在缓慢上升，而深度睡眠在减少。它会将这些信息关联起来，在问题变得严重之前提醒您关注，真正做到“防患于未然”。</p>
+                <div class="chart-container h-96 max-h-[50vh]">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">深度解读体检报告</h4>
+                    <p class="text-gray-600">不再面对复杂的化验单数据感到困惑。只需拍照上传，AI就能为您解读报告中的关键项，例如**血脂四项、血糖指标**等，并将其与您日常监测的**血压、心率**数据相结合，提供综合性的健康评估和风险提示。</p>
+                </div>
+                <div class="card">
+                    <div class="text-4xl mb-4">🌙</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">深度睡眠分析</h4>
+                    <p class="text-gray-600">不只看睡了多久，更关心睡了多好。AI会分析您的睡眠阶段、呼吸质量和夜间**心率**与**血氧**，提供个性化的改善建议，助您夜夜好眠。</p>
+                </div>
+                <div class="card">
+                    <div class="text-4xl mb-4">🏃‍♀️</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">私人活动教练</h4>
+                    <p class="text-gray-600">智能识别您的久坐时间，并适时提醒您起身活动。它还能记录您的运动成果，庆祝您达成的每一个小目标，让健康运动更有趣。</p>
+                </div>
+                <div class="card">
+                    <div class="text-4xl mb-4">🥗</div>
+                    <h4 class="text-xl font-bold text-[#005C97] mb-2">饮食关联分析</h4>
+                    <p class="text-gray-600">通过简单的语音或手动记录，AI能帮您分析饮食习惯与精力水平、睡眠质量之间的关系，助您找到最适合自己的健康饮食模式。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="in-the-box" class="mb-20 text-center">
+            <h3 class="text-3xl font-bold mb-10 text-[#005C97]">开箱清单</h3>
+            <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="flex flex-col items-center"><div class="text-6xl p-4">🖥️</div><p class="mt-2 font-semibold">AI健康中枢主机</p></div>
+                <div class="flex flex-col items-center"><div class="text-6xl p-4">🔌</div><p class="mt-2 font-semibold">电源适配器</p></div>
+                <div class="flex flex-col items-center"><div class="text-6xl p-4">📼</div><p class="mt-2 font-semibold">高速HDMI连接线</p></div>
+                <div class="flex flex-col items-center"><div class="text-6xl p-4">📖</div><p class="mt-2 font-semibold">快速入门指南</p></div>
+            </div>
+        </section>
 
-<script>
-    const primaryBlue = '#27296A';
-    const primaryGold = '#BD9B2F';
-    const secondaryBlue = '#6F6EB2';
-    const grayText = '#6c757d';
+        <section id="specs" class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-10 text-[#005C97]">产品规格</h3>
+            <div class="card overflow-x-auto p-0 md:p-6">
+                <table class="spec-table">
+                    <tbody>
+                        <tr><th>产品型号</th><td>AI Family Health Hub v1.0</td></tr>
+                        <tr><th>核心处理器</th><td>Rockchip RK3588 (8核心 64位, 4x Cortex-A76 + 4x Cortex-A55)</td></tr>
+                        <tr><th>AI性能</th><td>6 TOPS 专用神经网络处理单元 (NPU)，支持混合精度计算</td></tr>
+                        <tr><th>内存</th><td>8GB LPDDR4 高速内存</td></tr>
+                        <tr><th>存储</th><td>64GB eMMC 高速闪存 (可通过NVMe SSD扩展)</td></tr>
+                        <tr><th>显示输出</th><td>HDMI 2.1，最高支持 8K@60Hz 超高清画质，兼容HDR</td></tr>
+                        <tr><th>接口</th><td>千兆以太网, USB 3.1 (Type-A) x2, USB-C (OTG) x1, TF卡槽</td></tr>
+                        <tr><th>无线连接</th><td>Wi-Fi 6 (802.11ax) 双频, 蓝牙 5.2 (支持BLE)</td></tr>
+                        <tr><th>支持数据源</th><td>蓝牙可穿戴设备(采集**心率、血氧**等), 智能血压计/血糖仪, 手机App(OCR识别**医院化验单如血常规、血脂报告**等，及手动录入)</td></tr>
+                        <tr><th>安全特性</th><td>纯本地化数据处理，硬件级安全启动，文件系统级加密，安全OTA更新</td></tr>
+                        <tr><th>操作系统</th><td>基于Linux深度定制的安全OS</td></tr>
+                        <tr><th>电源</th><td>12V/2A DC 输入 (通过UL认证)</td></tr>
+                        <tr><th>尺寸与重量</th><td>120mm x 120mm x 35mm, 约350克</td></tr>
+                        <tr><th>环境要求</th><td>工作温度: 0°C ~ 40°C, 存储温度: -20°C ~ 60°C</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    // Chart.js Global Configuration
-    const chartTooltipConfig = {
-        plugins: {
-            legend: {
-                labels: {
-                    color: primaryBlue,
-                    font: {
-                        weight: 'bold',
-                        size: 14,
-                        family: "'Montserrat', sans-serif"
+        <footer class="text-center mt-16 text-gray-500">
+            <p>&copy; 2025 AI家庭健康中枢. 守护每个家庭的健康生活。</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const themeColors = {
+            primary: '#005C97',
+            negativeTrend: '#e53e3e',
+            positiveTrend: '#38a169'
+        };
+
+        const chartTooltipConfig = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 12 },
+                    padding: 10,
+                    cornerRadius: 4
+                },
+                legend: {
+                    labels: {
+                        color: '#334155',
+                        font: { size: 12 }
                     }
                 }
             }
-        },
-        scales: {
-            y: {
-                ticks: { color: primaryBlue, beginAtZero: true },
-                grid: { color: '#e5e7eb' }
-            },
-            x: {
-                ticks: { color: primaryBlue, font: { weight: 'bold' } },
-                grid: { display: false }
-            }
-        },
-        maintainAspectRatio: false,
-    };
-
-    // Sleep Quality Chart
-    new Chart(document.getElementById('sleepQualityChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [
-                {
-                    label: 'Deep Sleep (Hours)',
-                    data: [1.8, 2.1, 1.5, 2.5, 1.9, 2.2, 2.0],
-                    backgroundColor: primaryBlue,
-                    borderRadius: 4,
-                },
-                {
-                    label: 'Light Sleep (Hours)',
-                    data: [4.2, 3.8, 4.5, 3.5, 4.1, 3.9, 4.3],
-                    backgroundColor: secondaryBlue,
-                     borderRadius: 4,
-                },
-                {
-                    label: 'Awake (Hours)',
-                    data: [0.5, 0.4, 0.8, 0.3, 0.6, 0.4, 0.5],
-                    backgroundColor: '#FFD15C', // A lighter gold for better contrast
-                     borderRadius: 4,
-                }
-            ]
-        },
-        options: {
-            ...chartTooltipConfig,
-            scales: {
-                x: { stacked: true, ...chartTooltipConfig.scales.x },
-                y: { 
-                    stacked: true, 
-                    ...chartTooltipConfig.scales.y, 
-                    title: { 
-                        display: true, 
-                        text: 'Hours', 
-                        color: grayText,
-                        font: { size: 14, family: "'Montserrat', sans-serif" }
-                    } 
-                }
-            },
-            plugins: {
-                ...chartTooltipConfig.plugins,
-                tooltip: {
-                     callbacks: {
-                         label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += context.parsed.y + ' hrs';
-                            }
-                            return label;
+        };
+        
+        function createTrendsChart() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            if (!ctx) return;
+            const labels = Array.from({length: 12}, (_, i) => `第 ${i + 1} 周`);
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '平均静息心率 (次/分)',
+                        data: [62, 63, 62, 64, 63, 65, 66, 65, 67, 68, 67, 69],
+                        borderColor: themeColors.negativeTrend,
+                        backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: '平均深度睡眠时长 (分钟)',
+                        data: [95, 92, 93, 88, 90, 85, 86, 82, 84, 80, 78, 75],
+                        borderColor: themeColors.positiveTrend,
+                        backgroundColor: 'rgba(56, 161, 105, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            };
+            new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    ...chartTooltipConfig,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    stacked: false,
+                    plugins: {
+                        ...chartTooltipConfig.plugins,
+                        title: { display: true, text: '示例：AI识别的12周健康趋势变化', font: { size: 16, weight: 'bold' } },
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: '心率 (次/分)', color: themeColors.negativeTrend },
+                            grid: { drawOnChartArea: false },
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: '睡眠 (分钟)', color: themeColors.positiveTrend },
+                            grid: { drawOnChartArea: false }
                         }
                     }
                 }
-            }
+            });
         }
-    });
-</script>
+
+        window.onload = function() {
+            createTrendsChart();
+        };
+    </script>
 </body>
 </html>
